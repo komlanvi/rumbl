@@ -1,6 +1,5 @@
 defmodule Rumbl.Repo do
   use Ecto.Repo, otp_app: :rumbl
-  alias Rumbl.Schema.User
 
   @doc """
   Dynamically loads the repository url from the

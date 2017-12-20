@@ -19,7 +19,7 @@ defmodule RumblWeb.UserController do
   end
 
   def create(conn, %{"user" => user_inputs}) do
-    changeset = User.changeset(%User{}, user_inputs)
+    changeset = User.registration_changeset(%User{}, user_inputs)
     IO.inspect changeset, label: "BBBBBBBBBB"
     case Repo.insert(changeset) do
       {:ok, user} ->
