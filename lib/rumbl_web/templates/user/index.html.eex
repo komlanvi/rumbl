@@ -1,0 +1,26 @@
+<p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Username</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <%= for user <- @users do %>
+                <tr>
+                    <td>
+                        <%= render "user.html", user: user %>
+                    </td>
+                    <td>
+                        <%= user.username %>
+                    </td>
+                    <td>
+                        <%= link "View", to: user_path(@conn, :show, user.id) %>
+                    </td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+</p>

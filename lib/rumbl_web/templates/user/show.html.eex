@@ -1,0 +1,5 @@
+<div>
+    <h1>Showimg user</h1>
+    <p>Name: <%= @user.name %></p>
+    <p>Username: <%= @user.username %></p>
+</div>
