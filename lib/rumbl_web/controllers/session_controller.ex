@@ -20,7 +20,10 @@ defmodule RumblWeb.SessionController do
     end
   end
 
-  def delete(conn, %{"user_id" => user_id}) do
-
+  def delete(conn, _) do
+    conn
+    |> Auth.logout()
+    |> put_flash(:info, "We're sad that you're leaving but hope to see you soon.")
+    |> redirect(to: page_path(conn, :index))
   end
 end

@@ -1,4 +1,4 @@
-defmodule Rumbl.Auth do
+defmodule  Rumbl.Auth do
   @moduledoc false
   import Plug.Conn
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
@@ -33,5 +33,9 @@ defmodule Rumbl.Auth do
         dummy_checkpw() #It simulate a password check with variable timing (Against timing attacks)
         {:error, :not_found, conn}
     end
+  end
+
+  def logout(conn) do
+    configure_session(conn, drop: true)
   end
 end
