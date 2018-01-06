@@ -1,10 +1,8 @@
-defmodule Rumbl.Schema.User do
+defmodule Rumbl.App.User do
   @moduledoc false
   use Ecto.Schema
   import Ecto.Changeset
   alias Comeonin.Bcrypt
-
-  @required_fields [:name, :username, :password]
 
   schema "users" do
     field :name, :string

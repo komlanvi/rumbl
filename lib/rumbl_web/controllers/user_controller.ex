@@ -1,6 +1,6 @@
 defmodule RumblWeb.UserController do
   use RumblWeb, :controller
-  alias Rumbl.Schema.User
+  alias Rumbl.App.User
   alias Rumbl.Repo
   alias Rumbl.Auth
 
