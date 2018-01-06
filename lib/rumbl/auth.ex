@@ -1,7 +1,9 @@
-defmodule  Rumbl.Auth do
+defmodule Rumbl.Auth do
   @moduledoc false
   import Plug.Conn
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
+
+  alias Rumbl.App.User
 
   def init(opts) do
     Keyword.fetch!(opts, :repo)
@@ -9,7 +11,7 @@ defmodule  Rumbl.Auth do
 
   def call(conn, repo) do
     user_id = get_session(conn, :user_id)
-    user = user_id && repo.get(Rumbl.Schema.User, user_id)
+    user = user_id && repo.get(User, user_id)
     assign(conn, :current_user, user)
   end
 
@@ -23,7 +25,7 @@ defmodule  Rumbl.Auth do
 
   def login_by_username_and_password(conn, username, password, opts) do
     repo = Keyword.fetch!(opts, :repo)
-    user = repo.get_by(Rumbl.Schema.User, username: username)
+    user = repo.get_by(User, username: username)
     cond do
       user && checkpw(password, user.password_hash) ->
         {:ok, login(conn, user)}
