@@ -2,6 +2,7 @@ defmodule Rumbl.Schema.User do
   @moduledoc false
   use Ecto.Schema
   import Ecto.Changeset
+  alias Comeonin.Bcrypt
 
   @required_fields [:name, :username, :password]
 
@@ -33,7 +34,7 @@ defmodule Rumbl.Schema.User do
   defp put_pass_hash(changeset) do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: password}} ->
-        put_change(changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(password))
+        put_change(changeset, :password_hash, Bcrypt.hashpwsalt(password))
       _ ->
         changeset
     end
