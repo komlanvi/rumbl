@@ -16,7 +16,6 @@ defmodule Rumbl.App.Video do
     timestamps()
   end
 
-  @doc false
   def changeset(%Video{} = video, attrs) do
     video
     |> cast(attrs, @required_fields ++ @optional_fields)

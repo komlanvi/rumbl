@@ -10,7 +10,6 @@ defmodule Rumbl.App.Category do
     timestamps()
   end
 
-  @doc false
   def changeset(%Category{} = category, attrs) do
     category
     |> cast(attrs, [:name])

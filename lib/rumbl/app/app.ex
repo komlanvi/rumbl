@@ -7,8 +7,7 @@ defmodule Rumbl.App do
   import Ecto
 
   alias Rumbl.Repo
-  alias Rumbl.App.Video
-  alias Rumbl.App.User
+  alias Rumbl.App.{Video, User, Category}
 
   @doc """
   Returns the list of videos.
@@ -48,6 +47,19 @@ defmodule Rumbl.App do
   """
   def list_users do
     Repo.all(User)
+  end
+
+  @doc """
+  Returns the list of categories.
+
+  ## Examples
+
+      iex> list_categories()
+      [%Category{}, ...]
+
+  """
+  def list_categories do
+    Repo.all(Category)
   end
 
   @doc """
@@ -99,6 +111,22 @@ defmodule Rumbl.App do
   def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
+  Gets a single category.
+
+  Raises `Ecto.NoResultsError` if the Category does not exist.
+
+  ## Examples
+
+      iex> get_category!(adventure)
+      %Category{name: "adventure"}
+
+      iex> get_category!(romance)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_category!(name), do: Repo.get!(Category, name)
+
+  @doc """
   Creates a video.
 
   ## Examples
@@ -133,6 +161,26 @@ defmodule Rumbl.App do
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Creates a category.
+
+  Raise an exception if something go wrong.
+
+  ## Examples
+
+      iex> create_category(%{field: value})
+      {:ok, %Category{}}
+
+      iex> create_category(%{field: bad_value})
+      ** (Ecto.SomeException)
+
+  """
+  def create_category!(attrs \\ %{}) do
+    %Category{}
+    |> Category.changeset(attrs)
+    |> Repo.insert!()
   end
 
   @doc """
