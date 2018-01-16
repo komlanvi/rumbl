@@ -1,6 +1,8 @@
 defmodule Rumbl.App.Category do
   use Ecto.Schema
+
   import Ecto.Changeset
+  import Ecto.Query
   alias Rumbl.App.Category
 
 
@@ -17,7 +19,7 @@ defmodule Rumbl.App.Category do
   end
 
   @doc """
-  Returns a query to list categories ordered by name.
+  Returns a query thet list categories ordered by name.
 
   ## Examples
 

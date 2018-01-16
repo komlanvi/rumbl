@@ -242,4 +242,20 @@ defmodule Rumbl.App do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+
+  @doc """
+  Returns all the categories as {name, id} ordered by name
+
+  ## Examples
+
+      iex> load_categories()
+      [{"Category A", 4}, {"Category B", 1}, ...]
+  """
+  def load_categories do
+    query = Category
+    |> Category.categories_name_and_id()
+    |> Category.categories_ordered_by_name()
+
+    Repo.all(query)
+  end
 end
