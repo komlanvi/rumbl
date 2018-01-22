@@ -3,8 +3,7 @@ defmodule Rumbl.App.Video do
   import Ecto.Changeset
   alias Rumbl.App.Video
 
-  @required_fields [:title, :url, :description]
-  @optional_fields [:category_id]
+  @required_fields [:title, :url, :description, :category_id]
 
   schema "videos" do
     field :description, :string
@@ -18,7 +17,8 @@ defmodule Rumbl.App.Video do
 
   def changeset(%Video{} = video, attrs) do
     video
-    |> cast(attrs, @required_fields ++ @optional_fields)
-    |> validate_required([:title, :url, :description])
+    |> cast(attrs, @required_fields)
+    |> validate_required(@required_fields)
+    |> foreign_key_constraint(:category_id)
   end
 end
