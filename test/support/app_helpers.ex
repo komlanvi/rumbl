@@ -1,13 +1,14 @@
 defmodule Rumbl.AppHelpers do
   @moduledoc false
 
-  alias Rumbl.App
+  alias Rumbl.{App, Auth}
+  import Plug.Conn
 
-  @create_video_attrs %{description: "description", title: "title", url: "url", category_id: 1}
+  @create_video_attrs %{description: "description", title: "title", url: "url"}
 
   @create_user_attrs %{name: "name", username: "username", password: "password"}
 
-  @create_category_attrs %{id: 1, name: "category"}
+  @create_category_attrs %{name: "category"}
 
   def create_video(context) do
     user = Map.fetch!(context, :user)
@@ -27,5 +28,12 @@ defmodule Rumbl.AppHelpers do
   def create_category(_) do
     category = App.create_category!(@create_category_attrs)
     {:ok, category: category}
+  end
+
+  def log_user_in(context) do
+    conn = Map.fetch!(context, :conn)
+    user = Map.fetch!(context, :user)
+
+    {:ok, conn: conn |> Plug.Test.init_test_session(a: "b") |> Auth.login(user)}
   end
 end

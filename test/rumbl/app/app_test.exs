@@ -2,67 +2,69 @@ defmodule Rumbl.AppTest do
   use Rumbl.DataCase
 
   alias Rumbl.App
+  import Rumbl.AppHelpers
 
   describe "videos" do
     alias Rumbl.App.Video
 
-    @valid_attrs %{description: "some description", title: "some title", url: "some url"}
-    @update_attrs %{description: "some updated description", title: "some updated title", url: "some updated url"}
-    @invalid_attrs %{description: nil, title: nil, url: nil}
+    @create_video_attrs %{description: "description of a", title: "title a", url: "a.com", category_id: 1}
+    @update_video_attrs %{description: "description of b", title: "title b", url: "b.com", category_id: 1}
+    @invalid_video_attrs %{description: nil, title: nil, url: nil, category_id: nil}
 
-    def video_fixture(attrs \\ %{}) do
-      {:ok, video} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> App.create_video()
+    @create_video_attrs %{description: "description of a", title: "title a", url: "a.com", category_id: 1}
+    @update_video_attrs %{description: "description of b", title: "title b", url: "b.com"}
+    @invalid_video_attrs %{description: nil, title: nil, url: nil, category_id: nil}
 
-      video
-    end
+    @create_user_attrs %{name: "name_a", username: "username_a", password: "password_a"}
+    @update_user_attrs %{name: "name_b", username: "username_b", password: "password_b"}
+    @invalid_user_attrs %{name: nil, username: nil, password: nil}
 
-    test "list_videos/0 returns all videos" do
-      video = video_fixture()
+    @create_category_attrs %{name: "category_a"}
+    @update_category_attrs %{name: "category_b"}
+    @invalid_category_attrs %{name: nil}
+
+    setup [:create_user, :create_category, :create_video]
+
+    test "list_videos/0 returns all videos", %{video: video} do
       assert App.list_videos() == [video]
     end
 
-    test "get_video!/1 returns the video with given id" do
-      video = video_fixture()
+    test "get_video!/1 returns the video with given id", %{video: video} do
       assert App.get_video!(video.id) == video
     end
 
-    test "create_video/1 with valid data creates a video" do
-      assert {:ok, %Video{} = video} = App.create_video(@valid_attrs)
-      assert video.description == "some description"
-      assert video.title == "some title"
-      assert video.url == "some url"
+    test "create_video/1 with valid data creates a video", %{user: user, category: category} do
+      assert {:ok, %Video{} = video} = @create_video_attrs
+      |> Map.merge(%{category_id: category.id})
+      |> App.create_video(user)
+      assert video.description == "description of a"
+      assert video.title == "title a"
+      assert video.url == "a.com"
     end
 
-    test "create_video/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = App.create_video(@invalid_attrs)
+    test "create_video/1 with invalid data returns error changeset", %{user: user} do
+      assert {:error, %Ecto.Changeset{}} = App.create_video(@invalid_video_attrs, user)
     end
 
-    test "update_video/2 with valid data updates the video" do
-      video = video_fixture()
-      assert {:ok, video} = App.update_video(video, @update_attrs)
-      assert %Video{} = video
-      assert video.description == "some updated description"
-      assert video.title == "some updated title"
-      assert video.url == "some updated url"
+    test "update_video/2 with valid data updates the video", %{video: video} do
+      assert {:ok, updated_video} = App.update_video(video, @update_video_attrs)
+      assert %Video{} = updated_video
+      assert updated_video.description == "description of b"
+      assert updated_video.title == "title b"
+      assert updated_video.url == "b.com"
     end
 
-    test "update_video/2 with invalid data returns error changeset" do
-      video = video_fixture()
-      assert {:error, %Ecto.Changeset{}} = App.update_video(video, @invalid_attrs)
+    test "update_video/2 with invalid data returns error changeset", %{video: video} do
+      assert {:error, %Ecto.Changeset{}} = App.update_video(video, @invalid_video_attrs)
       assert video == App.get_video!(video.id)
     end
 
-    test "delete_video/1 deletes the video" do
-      video = video_fixture()
+    test "delete_video/1 deletes the video", %{video: video} do
       assert {:ok, %Video{}} = App.delete_video(video)
       assert_raise Ecto.NoResultsError, fn -> App.get_video!(video.id) end
     end
 
-    test "change_video/1 returns a video changeset" do
-      video = video_fixture()
+    test "change_video/1 returns a video changeset", %{video: video} do
       assert %Ecto.Changeset{} = App.change_video(video)
     end
   end
