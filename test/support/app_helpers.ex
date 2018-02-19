@@ -36,4 +36,10 @@ defmodule Rumbl.AppHelpers do
 
     {:ok, conn: conn |> Plug.Test.init_test_session(a: "b") |> Auth.login(user)}
   end
+
+  def login(conn, user = %Rumbl.App.User{}) do
+    conn
+    |> Plug.Test.init_test_session(a: "b")
+    |> Auth.login(user)
+  end
 end

@@ -2,7 +2,11 @@ defmodule RumblWeb.VideoControllerTest do
   use RumblWeb.ConnCase
 
   import Rumbl.AppHelpers
-  alias Rumbl.App
+  alias Rumbl.{App, Repo}
+
+  @create_video_attrs %{description: "d", title: "t", url: "url"}
+  @create_user_attrs %{name: "new_name", username: "new_username", password: "new_password"}
+  @valid_update_video_attrs %{description: "description of new", title: "title new", url: "new.com"}
 
   describe "edit video" do
     setup [:create_user, :create_category, :create_video]
@@ -52,7 +56,7 @@ defmodule RumblWeb.VideoControllerTest do
       count_before_insert = count_video(Rumbl.App.Video)
       conn = post conn, video_path(conn, :create, video: %{title: "V", description: "V", url: "http://v.com", category_id: category.id})
       video = Repo.get_by(Rumbl.App.Video, title: "V", description: "V")
-      assert redirected_to(conn) == video_path(conn, :show, video: video)
+      assert redirected_to(conn) == video_path(conn, :show, video)
       assert video.user_id == user.id
       refute count_before_insert == count_video(Rumbl.App.Video)
     end
@@ -63,77 +67,31 @@ defmodule RumblWeb.VideoControllerTest do
       assert html_response(conn, 200) =~ ~r/Oops, something went wrong! Please check the errors below./
       assert count_before_insert == count_video(Rumbl.App.Video)
     end
+
+    test "User cannot manage videos they don't own", %{conn: conn, category: category, user: user} do
+    {:ok, video} = @create_video_attrs
+    |> Map.merge(%{category_id: category.id})
+    |> App.create_video(user)
+
+    {:ok, non_owner} = App.create_user(@create_user_attrs)
+    conn = login(conn, non_owner)
+
+    assert_error_sent :not_found, fn ->
+      put conn, video_path(conn, :update, video, video: @valid_update_video_attrs)
+    end
+    assert_error_sent :not_found, fn ->
+      get conn, video_path(conn, :show, video)
+    end
+    assert_error_sent :not_found, fn ->
+      get conn, video_path(conn, :edit, video)
+    end
+    assert_error_sent :not_found, fn ->
+      delete conn, video_path(conn, :delete, video)
+    end
+    end
   end
 
   defp count_video(query) do
-    Repo.one(from v in query, select: count(v.id))
+    Repo.one!(from v in query, select: count(v.id))
   end
-#  describe "index" do
-#    test "lists all videos", %{conn: conn} do
-#      conn = get conn, video_path(conn, :index)
-#      assert html_response(conn, 200) =~ "Listing Videos"
-#    end
-#  end
-#
-#  describe "new video" do
-#    test "renders form", %{conn: conn} do
-#      conn = get conn, video_path(conn, :new)
-#      assert html_response(conn, 200) =~ "New Video"
-#    end
-#  end
-#
-#  describe "create video" do
-#    test "redirects to show when data is valid", %{conn: conn} do
-#      conn = post conn, video_path(conn, :create), video: @create_attrs
-#
-#      assert %{id: id} = redirected_params(conn)
-#      assert redirected_to(conn) == video_path(conn, :show, id)
-#
-#      conn = get conn, video_path(conn, :show, id)
-#      assert html_response(conn, 200) =~ "Show Video"
-#    end
-#
-#    test "renders errors when data is invalid", %{conn: conn} do
-#      conn = post conn, video_path(conn, :create), video: @invalid_attrs
-#      assert html_response(conn, 200) =~ "New Video"
-#    end
-#  end
-#
-#  describe "edit video" do
-#    setup [:create_video]
-#
-#    test "renders form for editing chosen video", %{conn: conn, video: video} do
-#      conn = get conn, video_path(conn, :edit, video)
-#      assert html_response(conn, 200) =~ "Edit Video"
-#    end
-#  end
-#
-#  describe "update video" do
-#    setup [:create_video]
-#
-#    test "redirects when data is valid", %{conn: conn, video: video} do
-#      conn = put conn, video_path(conn, :update, video), video: @update_attrs
-#      assert redirected_to(conn) == video_path(conn, :show, video)
-#
-#      conn = get conn, video_path(conn, :show, video)
-#      assert html_response(conn, 200) =~ "some updated description"
-#    end
-#
-#    test "renders errors when data is invalid", %{conn: conn, video: video} do
-#      conn = put conn, video_path(conn, :update, video), video: @invalid_attrs
-#      assert html_response(conn, 200) =~ "Edit Video"
-#    end
-#  end
-#
-#  describe "delete video" do
-#    setup [:create_video]
-#
-#    test "deletes chosen video", %{conn: conn, video: video} do
-#      conn = delete conn, video_path(conn, :delete, video)
-#      assert redirected_to(conn) == video_path(conn, :index)
-#      assert_error_sent 404, fn ->
-#        get conn, video_path(conn, :show, video)
-#      end
-#    end
-#  end
 end

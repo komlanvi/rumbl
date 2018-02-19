@@ -15,14 +15,6 @@ defmodule Rumbl.AppTest do
     @update_video_attrs %{description: "description of b", title: "title b", url: "b.com"}
     @invalid_video_attrs %{description: nil, title: nil, url: nil, category_id: nil}
 
-    @create_user_attrs %{name: "name_a", username: "username_a", password: "password_a"}
-    @update_user_attrs %{name: "name_b", username: "username_b", password: "password_b"}
-    @invalid_user_attrs %{name: nil, username: nil, password: nil}
-
-    @create_category_attrs %{name: "category_a"}
-    @update_category_attrs %{name: "category_b"}
-    @invalid_category_attrs %{name: nil}
-
     setup [:create_user, :create_category, :create_video]
 
     test "list_videos/0 returns all videos", %{video: video} do
