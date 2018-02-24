@@ -132,7 +132,7 @@ defmodule Rumbl.App do
   ## Examples
 
       iex> create_video(%{field: value}, %User{id: 5} = user)
-      {:ok, %Video{user_id: 5}}
+      {:ok, %Video{user_id: 5, field: value}}
 
       iex> create_video(%{field: bad_value}, %User{id: _})
       {:error, %Ecto.Changeset{}}
