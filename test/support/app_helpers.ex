@@ -2,7 +2,6 @@ defmodule Rumbl.AppHelpers do
   @moduledoc false
 
   alias Rumbl.{App, Auth}
-  import Plug.Conn
 
   @create_video_attrs %{description: "description", title: "title", url: "url"}
 
