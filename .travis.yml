@@ -4,12 +4,16 @@ elixir:
   - '1.7'
 
 env:
-  - MIX_ENV=test
+  - MIX_ENV=travis
 
 install:
   - mix local.rebar --force; mix local.hex --force; mix deps.get 
 
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+
 script:
   - mix test
 
-
+services:
+  - postgresql
