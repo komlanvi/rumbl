@@ -11,6 +11,7 @@ install:
 
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
+  - mix ecto.reset
 
 script:
   - mix test
